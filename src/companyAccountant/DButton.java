@@ -1,3 +1,5 @@
+package companyAccountant;
+
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -7,6 +9,7 @@ import javax.swing.border.LineBorder;
 
 @SuppressWarnings("serial")
 public class DButton extends JButton {
+	
 	
 	public DButton(String title) {
 		this.setText(title);

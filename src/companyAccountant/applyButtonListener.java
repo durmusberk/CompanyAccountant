@@ -1,3 +1,5 @@
+package companyAccountant;
+
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.Connection;
@@ -11,7 +13,6 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JSpinner;
 
-@SuppressWarnings("rawtypes")
 public class applyButtonListener implements ActionListener {
 	
 	private profileFrame proFrame;
@@ -22,8 +23,8 @@ public class applyButtonListener implements ActionListener {
 	private JSpinner extraShift;
 	private JSpinner nightShift;
 	private JSpinner bonus;
-	private JComboBox jobLocationCb;
-	private JComboBox agi;
+	private JComboBox<String> jobLocationCb;
+	private JComboBox<String> agi;
 	private JSpinner fuel;
 	private JSpinner riskCompensation;
 	private JSpinner familyAssistance;
@@ -44,8 +45,8 @@ public class applyButtonListener implements ActionListener {
 	private boolean closeOperation = false;
 	
 	
-	public applyButtonListener(profileFrame proFrame,JComboBox<String> cb1,JComboBox<String> cb2,JComboBox<String> cb3,JSpinner enteringDate ,JSpinner extraShift, JSpinner nightShift,JSpinner bonus,JComboBox jobLocationCb,
-			JComboBox agi,JSpinner fuel,JSpinner riskCompensation,JSpinner familyAssistance,JSpinner childAssistance,JSpinner otherPayments,JSpinner unionDues,JSpinner otherCuts,JButton[] buttonArray1,DButton sumValue, JButton[] buttonArray3,DButton sumValue1,JButton[] buttonArray4,
+	public applyButtonListener(profileFrame proFrame,JComboBox<String> cb1,JComboBox<String> cb2,JComboBox<String> cb3,JSpinner enteringDate ,JSpinner extraShift, JSpinner nightShift,JSpinner bonus,JComboBox<String> jobLocationCb,
+			JComboBox<String> agi,JSpinner fuel,JSpinner riskCompensation,JSpinner familyAssistance,JSpinner childAssistance,JSpinner otherPayments,JSpinner unionDues,JSpinner otherCuts,JButton[] buttonArray1,DButton sumValue, JButton[] buttonArray3,DButton sumValue1,JButton[] buttonArray4,
 			JButton sumValue2,JButton[] buttonArray5,DButton grossSalary,DButton netSalary,JButton percentage) {
 		this.proFrame = proFrame;
 		this.cb1 = cb1;
@@ -114,7 +115,8 @@ public class applyButtonListener implements ActionListener {
 			setProfileSettings(newProfileSettings,cb1.getSelectedIndex()+1);
 			proFrame.getCalFrame().getLogin().loginChecker(proFrame.getCalFrame().getLogin().getCurrentUser(), proFrame.getCalFrame().getLogin().getCurrentPass());
 			proFrame.getCalFrame().updateFrame(buttonArray1, sumValue, buttonArray3, sumValue1, buttonArray4, sumValue2, buttonArray5, grossSalary, netSalary, percentage);
-			
+			proFrame.getCalFrame().updateExpensePanel();
+			proFrame.getCalFrame().updateRemainingSalary();
 		}
 		else {
 			setProfileSettings(newProfileSettings,cb1.getSelectedIndex()+1);
@@ -127,12 +129,11 @@ public class applyButtonListener implements ActionListener {
 	}
 	
 	public  void setProfileSettings(String[] array,int selectedMonth) {
-		String url = "jdbc:mysql://  /*Your Ip*/    /companyAcc";
 		String uname = proFrame.getCalFrame().getLogin().getCurrentUser();
 		String password = proFrame.getCalFrame().getLogin().getCurrentPass();
+		String url = "jdbc:mysql:///*  YOUR IP  *//db_"+uname;
 		
-		
-		String queryUpdate = "UPDATE user_" + uname + " SET "+
+		String queryUpdate = "UPDATE profileSettings SET "+
 				" jobAndGroup='" + array[0]+"',"+
 				" graduation='" + array[1]+"',"+
 				" enteringDate='" + array[2]+"',"+
@@ -152,7 +153,7 @@ public class applyButtonListener implements ActionListener {
 		String months[]={"Ocak","Şubat","Mart","Nisan","Mayıs","Haziran","Temmuz","Ağustos","Eylül","Ekim","Kasım","Aralık"}; 
 		proFrame.getCalFrame().getTp().setTitleAt(0, months[cb1.getSelectedIndex()]);
 			
-			String queryMonth = "update user_"+uname+" set jobAndGroup = '" + proFrame.getCalFrame().getLogin().getSelectedMonth() +  "' where month LIKE 13";
+			String queryMonth = "update profileSettings set jobAndGroup = '" + proFrame.getCalFrame().getLogin().getSelectedMonth() +  "' where month LIKE 13";
 		
 		
 		proFrame.getCalFrame().getLogin().setProfileSettings(array);

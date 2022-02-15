@@ -1,3 +1,5 @@
+package companyAccountant;
+
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.Connection;
@@ -30,7 +32,6 @@ public class passwordApplyButtonListener implements ActionListener {
 		
 	}
 
-	@SuppressWarnings("unused")
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		
@@ -39,7 +40,7 @@ public class passwordApplyButtonListener implements ActionListener {
 		char[] newPassArr2 = newPass2.getPassword();
 		
 		if (!Arrays.equals(newPassArr1, newPassArr2)) {
-			wrongPasswordThread myThread = new wrongPasswordThread(notEqualLabel,"Passwords did not match!");
+			new wrongPasswordThread(notEqualLabel,"Passwords did not match!");
 		}
 		else if (Arrays.equals(newPassArr1, newPassArr2)) {
 			notEqualLabel.setText("");
@@ -53,11 +54,11 @@ public class passwordApplyButtonListener implements ActionListener {
 				newPass2.setText("");
 			}
 			else if (result == 2) {
-				wrongPasswordThread myThread = new wrongPasswordThread(notEqualLabel,"Passwords Same!");
+				new wrongPasswordThread(notEqualLabel,"Passwords Same!");
 			}
 			
 			else {
-				wrongPasswordThread myThread = new wrongPasswordThread(notEqualLabel,"Current Password Wrong. Try Again!"); 
+				new wrongPasswordThread(notEqualLabel,"Current Password Wrong. Try Again!"); 
 			}
 		}
 		
@@ -72,7 +73,7 @@ public class passwordApplyButtonListener implements ActionListener {
 		return pass;
 	}
 	public  int changePassword(String oldPass,String newPass) {
-		String url = "jdbc:mysql:// /*Your Ip*/    /companyAcc";
+		String url = "jdbc:mysql:///*  YOUR IP  *//companyAcc";
 		String uname = passFrame.getCalFrame().getLogin().getCurrentUser();
 		String password = passFrame.getCalFrame().getLogin().getCurrentPass();
 		String queryUpdatePass = "SET PASSWORD = '"+newPass+"';";

@@ -1,3 +1,5 @@
+package companyAccountant;
+
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Font;
@@ -7,6 +9,10 @@ import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.Statement;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.Locale;
@@ -29,7 +35,8 @@ public class calculationFrame extends JFrame {
 	private boolean profileScreenOpened = false;
 	private boolean changePasswordScreenOpened = false;
 	private JTabbedPane tp;
-	
+	private ExpensePanel panel2;
+	private DButton remainingSalary;
 	
 	public calculationFrame(loginFrame login) {
 		
@@ -74,17 +81,22 @@ public class calculationFrame extends JFrame {
 		mainPanel.setLayout(new GridLayout(1,1));
 		this.setContentPane(mainPanel);
 		
-		JPanel p1=new JPanel();  
-	    
-	    
-	    p1.setLayout(new BorderLayout());
-	    
+		
+	 
 	    String months[]={"Ocak","Şubat","Mart","Nisan","Mayıs","Haziran","Temmuz","Ağustos","Eylül","Ekim","Kasım","Aralık"}; 
 	   
 	    
 	    tp=new JTabbedPane();
 	    
+	    JPanel p1=new JPanel();  
+	    JPanel p2=new JPanel();  
+	    p1.setLayout(new BorderLayout());
+	    
+	    
+	    
+	    
 	    tp.add(months[login.getSelectedMonth()-1],p1);
+	    tp.add("Giderler",p2);
 	    
 	    tp.setBounds(10,0, 500,500);
 	    tp.setLocation(0, 0);
@@ -92,8 +104,8 @@ public class calculationFrame extends JFrame {
 	    
 	    
 	    JPanel panel1 = new JPanel();
-	    panel1.setLayout(new GridBagLayout());
 	    
+	    panel2 =  new ExpensePanel(this);
 	    
 	   
 	    
@@ -301,7 +313,14 @@ public class calculationFrame extends JFrame {
 	    gbcPanel1.gridx = 5;
 	    gbcPanel1.gridy = 9;
 	    panel1.add(netText,gbcPanel1);
+	    
+	    DButton remainingTest = new DButton("Giderler");
+	    gbcPanel1.gridwidth = 2;
+	    gbcPanel1.gridx = 5;
+	    gbcPanel1.gridy = 10;
+	    panel1.add(remainingTest,gbcPanel1);
 	    gbcPanel1.insets = new Insets(0, 0, 0, 0);
+	    
 	    
 	    DButton grossSalary = new DButton();
 	    gbcPanel1.gridwidth = 2;
@@ -314,23 +333,39 @@ public class calculationFrame extends JFrame {
 	    gbcPanel1.gridx = 7;
 	    gbcPanel1.gridy = 9;
 	    panel1.add(netSalary,gbcPanel1);
+	    
+	    remainingSalary = new DButton();
+	    gbcPanel1.gridwidth = 2;
+	    gbcPanel1.gridx = 7;
+	    gbcPanel1.gridy = 10;
+	    panel1.add(remainingSalary,gbcPanel1);
 
 	    
 	  
 	    
-	    JScrollPane scrollableTextArea = new JScrollPane(panel1);  
+	    JScrollPane scrollableArea = new JScrollPane(panel1);  
 	    
-        scrollableTextArea.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);  
-        scrollableTextArea.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+        scrollableArea.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);  
+        scrollableArea.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
 	    
+        JScrollPane scrollableArea2 = new JScrollPane(panel2);
+        scrollableArea2.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);  
+        scrollableArea2.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+        
+        
 	    p1.setLayout(new GridLayout(1,1));
 	    
-	    p1.add(scrollableTextArea);
+	    p1.add(scrollableArea);
+	    
+	    p2.setLayout(new GridLayout(1,1));
+	    
+	    p2.add(scrollableArea2);
 	    
 	    
 	    
 	    updateFrame(buttonArray1, sumValue, buttonArray3, sumValue1, buttonArray4, buttonArray4[5], buttonArray5, grossSalary, netSalary,buttonArray2[0]);
-		
+		updateExpensePanel();
+		updateRemainingSalary();
 	    i1.addActionListener(new profileButtonListener(this,buttonArray1, sumValue, buttonArray3, sumValue1, buttonArray4, buttonArray4[5], buttonArray5, grossSalary, netSalary,buttonArray2[0]));
 		
 		mb.add(menu);
@@ -405,7 +440,59 @@ public class calculationFrame extends JFrame {
 		netSalary.setText(""+df.format(netSalaryValue));
 		
 	}
-
+	
+	public void updateExpensePanel() {
+		for (int i = 0; i < panel2.getModel().getRowCount(); i++) {
+			panel2.getModel().removeRow(i);
+		}
+		
+		String uname = getLogin().getCurrentUser();
+		String upassword = getLogin().getCurrentPass();
+		String url = "jdbc:mysql:///*  YOUR IP  *//db_"+uname;
+		String query = "select * from expenseMonth"+ getLogin().getSelectedMonth();
+		String countTable = "select count(*) from expenseMonth"+ getLogin().getSelectedMonth();
+		 
+		try {
+			Class.forName("com.mysql.cj.jdbc.Driver");
+		}
+		catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		}
+		try {
+			Connection con = DriverManager.getConnection(url,uname,upassword);
+			Statement statement =  con.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE,ResultSet.CONCUR_UPDATABLE); 
+			Statement statementCount = con.createStatement();
+			ResultSet resultQuery = statement.executeQuery(query);
+			
+			ResultSet rs = statementCount.executeQuery(countTable);
+			int rowCount = 0;
+			while (rs.next()) {
+				rowCount = Integer.parseInt(rs.getString(1));
+			}
+			while (resultQuery.next()) {
+				for (int i = 1; i <= rowCount; i++) {
+					resultQuery.absolute(i);
+					panel2.getModel().addRow(new Object[]{resultQuery.getString(1), resultQuery.getString(2), resultQuery.getString(3)});
+			}
+			}
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+	}
+	public void updateRemainingSalary() {
+		DecimalFormat df = new DecimalFormat("#.##", DecimalFormatSymbols.getInstance(Locale.US));
+		double sum = 0;
+		for (int i = 0; i < panel2.getModel().getRowCount(); i++) {
+			sum += Double.parseDouble(panel2.getModel().getValueAt(i, 1).toString());
+		}
+		
+		remainingSalary.setText(""+df.format(sum));
+		
+		
+	}
+	
 	public JMenu getMenu() {
 		return menu;
 	}
@@ -440,6 +527,8 @@ public class calculationFrame extends JFrame {
 	public JTabbedPane getTp() {
 		return tp;
 	}
+	
+	
 
 
 	

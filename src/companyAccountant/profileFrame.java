@@ -1,5 +1,6 @@
+package companyAccountant;
+
 import java.awt.Dimension;
-import java.awt.HeadlessException;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
@@ -8,54 +9,27 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.GregorianCalendar;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JSpinner;
-import javax.swing.JTextField;
 import javax.swing.SpinnerDateModel;
 import javax.swing.SpinnerModel;
 import javax.swing.SpinnerNumberModel;
 
-@SuppressWarnings({ "unused", "serial" })
+@SuppressWarnings("serial")
 public class profileFrame extends JFrame{
 	
 	private calculationFrame calFrame;
-	private JButton sumValue2;
-	private DButton sumValue;
-	private DButton sumValue1;
-	private DButton grossSalary;
-	private DButton netSalary;
-	private JButton[] buttonArray1;
-	private JButton[] buttonArray3;
-	private JButton[] buttonArray4;
-	private JButton[] buttonArray5;
-	
-	
-	
-	
-	
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public profileFrame(calculationFrame calFrame,JButton[] buttonArray1,DButton sumValue, JButton[] buttonArray3,DButton sumValue1,JButton[] buttonArray4,
 			JButton sumValue2,JButton[] buttonArray5,DButton grossSalary,DButton netSalary,JButton percentage) {
 		
 		this.calFrame = calFrame;
-		this.sumValue2 = sumValue2;
-		this.sumValue = sumValue;
-		this.sumValue1 = sumValue1;
-		this.grossSalary = grossSalary;
-		this.netSalary = netSalary;
-		this.buttonArray1 = buttonArray1;
-		this.buttonArray3 = buttonArray3;
-		this.buttonArray4 = buttonArray4;
-		this.buttonArray5 = buttonArray5;
-		
 		this.setTitle("Profile Settings");
 		this.setPreferredSize(new Dimension(550,720));
 		this.setLayout(null);
@@ -132,7 +106,7 @@ public class profileFrame extends JFrame{
 		
 		
 		
-		SpinnerModel sm1,sm2,sm3,sm4,sm5,sm6,sm7,sm8,sm9,sm10,sm11,sm12;
+		SpinnerModel sm1,sm2,sm3,sm5,sm6,sm7,sm8,sm9,sm10,sm12;
 		sm1 = new SpinnerNumberModel(0, 0, 999999, 1);
 		sm2 = new SpinnerNumberModel(0, 0, 999999, 0.5);
 		sm3 = new SpinnerNumberModel(0, 0, 999999, 1);
@@ -274,9 +248,8 @@ public class profileFrame extends JFrame{
 		
 		
 	}
-	@SuppressWarnings("rawtypes")
-	public void updateFrame(JComboBox<String> cb1,JComboBox<String> cb2,JComboBox<String> cb3,JSpinner enteringDate ,JSpinner extraShift, JSpinner nightShift,JSpinner bonus,JComboBox jobLocationCb,
-			JComboBox agiTableCb,JSpinner fuel,JSpinner riskCompensation,JSpinner familyAssistance,JSpinner childAssistance,JSpinner otherPayments,JSpinner unionDues,JSpinner otherCuts,String[] profileSettings,boolean monthBoolean) {
+	public void updateFrame(JComboBox<String> cb1,JComboBox<String> cb2,JComboBox<String> cb3,JSpinner enteringDate ,JSpinner extraShift, JSpinner nightShift,JSpinner bonus,JComboBox<String> jobLocationCb,
+			JComboBox<String> agiTableCb,JSpinner fuel,JSpinner riskCompensation,JSpinner familyAssistance,JSpinner childAssistance,JSpinner otherPayments,JSpinner unionDues,JSpinner otherCuts,String[] profileSettings,boolean monthBoolean) {
 		
 		
 		
@@ -312,9 +285,9 @@ public class profileFrame extends JFrame{
         
 	}
 	public String[] updateSettings(int selectedMonth) {
-		String url = "jdbc:mysql:// /*Your Ip*/    /companyAcc";
 		String uname = calFrame.getLogin().getCurrentUser();
 		String password = calFrame.getLogin().getCurrentPass();
+		String url = "jdbc:mysql:///*  YOUR IP  *//db_"+uname;
 		try {
 			Class.forName("com.mysql.cj.jdbc.Driver");
 		}
@@ -326,7 +299,7 @@ public class profileFrame extends JFrame{
 			Statement statementProfile = con.createStatement();
 			
 			
-			String queryProfile = "select * from user_"+ uname +" where month LIKE "+selectedMonth ;
+			String queryProfile = "select * from profileSettings where month LIKE "+selectedMonth ;
 			
 			ResultSet resultProfile = statementProfile.executeQuery(queryProfile);
 			System.out.println("connected");

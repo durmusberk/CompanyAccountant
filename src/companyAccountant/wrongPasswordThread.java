@@ -1,3 +1,5 @@
+package companyAccountant;
+
 import javax.swing.JLabel;
 
 public class wrongPasswordThread extends Thread {

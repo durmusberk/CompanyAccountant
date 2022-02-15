@@ -1,3 +1,5 @@
+package companyAccountant;
+
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -18,7 +20,6 @@ public class loginButtonListener implements ActionListener {
 	}
 	
 	@Override
-	@SuppressWarnings("unused")
 	public void actionPerformed(ActionEvent e) {
 		String usernameCheck = userField.getText();
 		
@@ -31,8 +32,7 @@ public class loginButtonListener implements ActionListener {
 		if (logFrame.loginChecker(usernameCheck, passCheck)) {
 			logFrame.setCurrentUser(usernameCheck);
 			logFrame.setVisible(false);
-			
-			calculationFrame calFrame = new calculationFrame(logFrame);
+			 new calculationFrame(logFrame);
 			userField.setText("Username...");
 			userField.setForeground(Color.GRAY);
 			passField.setText("**********");
@@ -42,7 +42,7 @@ public class loginButtonListener implements ActionListener {
 
 		}
 		else {
-			wrongPasswordThread myThread = new wrongPasswordThread(logFrame.getWrongPassword(),"⚠️ Wrong Username or Password!");
+			new wrongPasswordThread(logFrame.getWrongPassword(),"⚠️ Wrong Username or Password!");
 		}
 		
 	}

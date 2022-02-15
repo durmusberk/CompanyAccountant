@@ -1,3 +1,5 @@
+package companyAccountant;
+
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -69,24 +71,7 @@ public class loginFrame extends JFrame{
 		userField.setForeground(Color.GRAY);
 		passField.setForeground(Color.GRAY);
 		
-	    userField.addFocusListener(new FocusListener(){
-	        @Override
-	        public void focusGained(FocusEvent e){
-	        	if (userField.getText().equals("Username...")) {
-	        		userField.setText("");
-		        	userField.setForeground(Color.BLACK);
-				}
-	        }
-
-			@Override
-			public void focusLost(FocusEvent e) {
-				if (userField.getText().equals("")) {
-					userField.setText("Username...");
-					userField.setForeground(Color.GRAY);
-				}
-				
-			}
-	    });
+	    userField.addFocusListener(new ButtonFocusListener("Username..."));
 	    
 	    passField.addFocusListener(new FocusListener(){
 	        @Override
@@ -132,15 +117,12 @@ public class loginFrame extends JFrame{
 		
 		
 		showPass.addMouseListener(new MouseAdapter() {
-				@SuppressWarnings("unused")
-				int counter = 0;
 				boolean mousePressed;
 		        public void mousePressed(MouseEvent e) {
 		            mousePressed = true;
 		            new Thread() {
 		                public void run() {
 		                    while (mousePressed) {
-		                        counter += 1;
 		                        passField.setEchoChar((char)0);
 		                    }
 		                }
@@ -292,7 +274,7 @@ public class loginFrame extends JFrame{
 	
 	private void pullProfileSettings(Connection con) throws SQLException {
 		
-		String queryProfile = "select * from user_"+ currentUser;
+		String queryProfile = "select * from profileSettings";
 		
 		
 		Statement statementProfile = con.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE,ResultSet.CONCUR_UPDATABLE); 
@@ -338,10 +320,11 @@ public class loginFrame extends JFrame{
 	}
 	
 	public  boolean loginChecker(String usernameCheck, String passwordCheck) {
-		String url = "jdbc:mysql:// /*Your Ip*/    /companyAcc";
+		String url = "jdbc:mysql:///*  YOUR IP  *//companyAcc";
+		String urlUser = "jdbc:mysql:///*  YOUR IP  *//db_"+usernameCheck;
 		String uname = usernameCheck;
 		String password = passwordCheck;
-		String queryProfile = "select * from user_"+ usernameCheck;		 
+		String queryProfile = "select * from profileSettings";		 
 		try {
 			Class.forName("com.mysql.cj.jdbc.Driver");
 		}
@@ -351,9 +334,10 @@ public class loginFrame extends JFrame{
 		}
 		try {
 			Connection con = DriverManager.getConnection(url,uname,password);
+			Connection conUser = DriverManager.getConnection(urlUser,uname,password);
 			
 			
-			Statement statementMonth = con.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE,ResultSet.CONCUR_UPDATABLE); 
+			Statement statementMonth = conUser.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE,ResultSet.CONCUR_UPDATABLE); 
 			ResultSet resultMonth = statementMonth.executeQuery(queryProfile);
 			
 			resultMonth.absolute(13);
@@ -365,7 +349,7 @@ public class loginFrame extends JFrame{
 			
 			currentUser = usernameCheck;
 			currentPass = passwordCheck;
-			pullProfileSettings(con);
+			pullProfileSettings(conUser);
 			pullSeniorityTable(con);
 			pullJobTable(con);
 			pullAgiTable(con);
