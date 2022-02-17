@@ -5,13 +5,13 @@ In this project, I worked with my father. My father came to me and told me that 
 
 Let's get to the point. What can you see in this program? This program has three main parts. The first one is the Login screen. As the name suggests, this screen takes your username and password to let you go inside. That username and password will be provided by me. Because I don't want everybody to register for this program. Maybe in the future, I can let everybody use this program. Who knows... Secondly, the calculation screen. In this screen, you are going to see with the main part of the program. The screen shows the salary and other kinds of stuff. This screen will change according to the conditions found in the third part. Let's talk about the third part which is having conditions. In this part, clients can arrange their salary by conditions, choose their working features like where they are working or what their jobs are. There are some other kinds of stuff like changing the password screen. This is basic, it changes your password :). See you later.
 
-V1.0.0
--Program has the database connection and store all datas in it. People can only calculate their incomes.
+    v1.0.0
+    -Program has the database connection and store all datas in it. People can only calculate their incomes.
 
-V2.0.0
--Database structure has changed. Alsa added another calculation tab for expenses. People can calculate their incomes and also their expenses and program monitors them.
-  v2.0.1
-  -Database structure improved and made some bugfixes.
+    v2.0.0
+    -Database structure has changed. Alsa added another calculation tab for expenses. People can calculate their incomes and also their expenses and program monitors them.
+          v2.0.1
+          -Database structure improved and made some bugfixes.
 
 ![Login Screen](Images/LoginScreen.png)
 
